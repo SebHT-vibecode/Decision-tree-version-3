@@ -44,6 +44,13 @@ const USE_CASES = [
   'Exploratory (e.g. MoA understanding)'
 ];
 
+const BENEFIT_OPTIONS = [
+  'Speed: Shorter CTs',
+  'Evidence: Richer data collection',
+  'Cost savings: Cheaper CT operations',
+  'Recruitment: Smaller sample size'
+];
+
 const MEASUREMENT_DATA = {
   'Mental Health': [
     {
@@ -287,6 +294,7 @@ let state = {
   evidence: null,
   useCase: null,
   endpoint: null,
+  benefit: null,
   currentTab: 0
 };
 
@@ -304,6 +312,9 @@ function render() {
       break;
     case 'weightEndpoint':
       renderWeightEndpointSelection();
+      break;
+    case 'benefit':
+      renderBenefitSelection();
       break;
     case 'summary':
       renderSummary();
@@ -432,7 +443,7 @@ function renderUseCaseSelection() {
     const button = createOptionButton(value, 'Tap to continue');
     button.addEventListener('click', () => {
       state.useCase = value;
-      state.step = 'summary';
+      state.step = 'benefit';
       state.currentTab = 0;
       render();
     });
@@ -451,6 +462,30 @@ function renderUseCaseSelection() {
   app.appendChild(renderActionRow());
 }
 
+function renderBenefitSelection() {
+  app.appendChild(renderCard({ title: `Use Case: ${state.useCase}`, content: 'What benefit are you most interested in achieveing with a Digital Health Technology?' }));
+
+  const card = document.createElement('section');
+  card.className = 'card';
+  const options = document.createElement('div');
+  options.className = 'options-grid';
+
+  BENEFIT_OPTIONS.forEach(value => {
+    const button = createOptionButton(value, 'Tap to see device recommendations');
+    button.addEventListener('click', () => {
+      state.benefit = value;
+      state.step = 'summary';
+      state.currentTab = 0;
+      render();
+    });
+    options.appendChild(button);
+  });
+
+  card.appendChild(options);
+  app.appendChild(card);
+  app.appendChild(renderActionRow());
+}
+
 function renderWeightEndpointSelection() {
   app.appendChild(renderCard({ title: 'Weight loss endpoint', content: 'Choose the primary endpoint you want to measure.' }));
   const card = document.createElement('section');
@@ -462,7 +497,7 @@ function renderWeightEndpointSelection() {
     const button = createOptionButton(endpoint.label, 'Tap to see device recommendations');
     button.addEventListener('click', () => {
       state.endpoint = endpoint.value;
-      state.step = 'summary';
+      state.step = 'useCase';
       state.currentTab = 0;
       render();
     });
@@ -589,7 +624,7 @@ function renderActionRow(primaryLabel = 'Start over', primaryAction) {
 }
 
 function resetState() {
-  state = { step: 'ta', ta: null, evidence: null, useCase: null, endpoint: null, currentTab: 0 };
+  state = { step: 'ta', ta: null, evidence: null, useCase: null, endpoint: null, benefit: null, currentTab: 0 };
 }
 
 render();
